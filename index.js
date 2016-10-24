@@ -156,4 +156,4 @@ const getDevicesFromUI = () => new Promise((resolve) => {
   });
 });
 
-window.getDevicesFromUI = getDevicesFromUI;
+module.exports = getDevicesFromUI;
