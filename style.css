@@ -1,0 +1,59 @@
+.device-display {
+  display: inline-block;
+  padding: 20px;
+}
+
+.pub-container {
+  margin-bottom: 10px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.pub-container.selected {
+  opacity: 1;
+}
+
+.pub-label {
+  text-align: center;
+}
+
+.device-selector {
+  font-family: sans-serif;
+  position: fixed;
+  left: 10vw;
+  top: 10vh;
+  width: 80vw;
+  border: 1px solid black;
+  border-radius: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.device-selector h1, .device-selector h2 {
+  text-align: center;
+}
+
+.device-options {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.finish-buttons {
+  text-align: center;
+  padding: 20px;
+}
+
+.finish-buttons .button {
+  background-color: #8cf;
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  display: inline-block;
+  cursor: pointer;
+  margin: 10px;
+  width: 50px;
+}
+
+.finish-buttons .cancel-button {
+  background-color: white;
+}
