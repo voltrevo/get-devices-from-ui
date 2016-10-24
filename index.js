@@ -94,48 +94,58 @@ const DeviceSelectorGroup = (ot, devices, container) => {
   return group;
 };
 
-loadScript('https://static.opentok.com/v2/js/opentok.js').then(() => {
-  const ot = window.OT;
+const getDevicesFromUI = () => new Promise((resolve) => {
+  loadScript('https://static.opentok.com/v2/js/opentok.js').then(() => {
+    const ot = window.OT;
 
-  ot.getDevices((err, devices) => {
-    if (err) {
-      throw err;
-    }
+    ot.getDevices((err, devices) => {
+      if (err) {
+        throw err;
+      }
 
-    const deviceSelector = DeviceSelector();
-    document.body.appendChild(deviceSelector);
+      const deviceSelector = DeviceSelector();
+      document.body.appendChild(deviceSelector);
 
-    const videoGroup = DeviceSelectorGroup(
-      ot,
-      devices.filter(device => device.kind === 'videoInput'),
-      deviceSelector.querySelector('.video-options')
-    );
+      const videoGroup = DeviceSelectorGroup(
+        ot,
+        devices.filter(device => device.kind === 'videoInput'),
+        deviceSelector.querySelector('.video-options')
+      );
 
-    const audioGroup = DeviceSelectorGroup(
-      ot,
-      devices.filter(device => device.kind === 'audioInput'),
-      deviceSelector.querySelector('.audio-options')
-    );
+      const audioGroup = DeviceSelectorGroup(
+        ot,
+        devices.filter(device => device.kind === 'audioInput'),
+        deviceSelector.querySelector('.audio-options')
+      );
 
-    const okButton = deviceSelector.querySelector('.ok-button');
-    const cancelButton = deviceSelector.querySelector('.cancel-button');
+      const okButton = deviceSelector.querySelector('.ok-button');
+      const cancelButton = deviceSelector.querySelector('.cancel-button');
 
-    const cleanup = () => {
-      [videoGroup, audioGroup].forEach((group) => {
-        group.items.forEach((item) => {
-          item.publisher.destroy();
+      const cleanup = () => {
+        [videoGroup, audioGroup].forEach((group) => {
+          group.items.forEach((item) => {
+            item.publisher.destroy();
+          });
+        });
+
+        document.body.removeChild(deviceSelector);
+      };
+
+      okButton.addEventListener('click', () => {
+        cleanup();
+
+        resolve({
+          videoSource: videoGroup.selectedDeviceId,
+          audioSource: audioGroup.selectedDeviceId,
         });
       });
 
-      document.body.removeChild(deviceSelector);
-    };
-
-    okButton.addEventListener('click', () => {
-      cleanup();
-    });
-
-    cancelButton.addEventListener('click', () => {
-      cleanup();
+      cancelButton.addEventListener('click', () => {
+        cleanup();
+        resolve({ video: null, audio: null });
+      });
     });
   });
 });
+
+window.getDevicesFromUI = getDevicesFromUI;
