@@ -13,4 +13,4 @@ httpProxy.createServer({
     key: fs.readFileSync(`${process.env.HOME}/.localhost-ssl/host.key`, 'utf8'),
     cert: fs.readFileSync(`${process.env.HOME}/.localhost-ssl/host.crt`, 'utf8'),
   },
-}).listen(8889);
+}).listen(8888);
