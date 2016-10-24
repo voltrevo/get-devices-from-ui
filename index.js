@@ -116,5 +116,26 @@ loadScript('https://static.opentok.com/v2/js/opentok.js').then(() => {
       devices.filter(device => device.kind === 'audioInput'),
       deviceSelector.querySelector('.audio-options')
     );
+
+    const okButton = deviceSelector.querySelector('.ok-button');
+    const cancelButton = deviceSelector.querySelector('.cancel-button');
+
+    const cleanup = () => {
+      [videoGroup, audioGroup].forEach((group) => {
+        group.items.forEach((item) => {
+          item.publisher.destroy();
+        });
+      });
+
+      document.body.removeChild(deviceSelector);
+    };
+
+    okButton.addEventListener('click', () => {
+      cleanup();
+    });
+
+    cancelButton.addEventListener('click', () => {
+      cleanup();
+    });
   });
 });
