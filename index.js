@@ -30,6 +30,16 @@ const loadScript = src => documentReady.then(() => {
   );
 });
 
+const getOpentok = () => {
+  if (window.OT) {
+    return Promise.resolve(window.OT);
+  }
+
+  return loadScript('https://static.opentok.com/v2/js/opentok.js')
+    .then(() => window.OT)
+  ;
+};
+
 const DeviceItem = (ot, device) => {
   const deviceItem = {};
 
@@ -95,9 +105,7 @@ const DeviceSelectorGroup = (ot, devices, container) => {
 };
 
 const getDevicesFromUI = () => new Promise((resolve) => {
-  loadScript('https://static.opentok.com/v2/js/opentok.js').then(() => {
-    const ot = window.OT;
-
+  getOpentok().then((ot) => {
     ot.getDevices((err, devices) => {
       if (err) {
         throw err;
