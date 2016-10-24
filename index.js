@@ -1,5 +1,7 @@
 'use strict';
 
+const EventEmitter = require('events');
+
 const DeviceDisplay = require('./DeviceDisplay.html');
 const DeviceSelector = require('./DeviceSelector.html');
 require('./style.css');
@@ -28,6 +30,70 @@ const loadScript = src => documentReady.then(() => {
   );
 });
 
+const DeviceItem = (ot, device) => {
+  const deviceItem = {};
+
+  deviceItem.device = device;
+
+  deviceItem.display = DeviceDisplay();
+  deviceItem.display.querySelector('.pub-label').textContent = device.label;
+  deviceItem.pubContainer = deviceItem.display.querySelector('.pub-container');
+
+  const opt = (device.kind === 'audioInput' ?
+    { audioSource: device.deviceId, videoSource: null } :
+    { audioSource: null, videoSource: device.deviceId }
+  );
+
+  opt.insertMode = 'append';
+
+  deviceItem.publisher = ot.initPublisher(deviceItem.pubContainer, opt);
+
+  deviceItem.events = new EventEmitter();
+
+  deviceItem.display.addEventListener('click', () => {
+    deviceItem.events.emit('click');
+  });
+
+  return deviceItem;
+};
+
+const DeviceSelectorGroup = (ot, devices, container) => {
+  const group = {};
+
+  group.selectedDeviceId = null;
+
+  group.items = devices.map(device => DeviceItem(ot, device));
+
+  const deselectAll = () => {
+    group.items.forEach((item) => {
+      item.pubContainer.classList.remove('selected');
+    });
+  };
+
+  group.items.forEach((item) => {
+    container.appendChild(item.display);
+
+    item.events.addListener('click', () => {
+      deselectAll();
+
+      if (group.selectedDeviceId !== item.device.deviceId) {
+        item.pubContainer.classList.add('selected');
+        group.selectedDeviceId = item.device.deviceId;
+      } else {
+        item.pubContainer.classList.remove('selected');
+        group.selectedDeviceId = null;
+      }
+    });
+  });
+
+  if (group.items.length > 0) {
+    group.items[0].pubContainer.classList.add('selected');
+    group.selectedDeviceId = group.items[0].device.deviceId;
+  }
+
+  return group;
+};
+
 loadScript('https://static.opentok.com/v2/js/opentok.js').then(() => {
   const ot = window.OT;
 
@@ -39,52 +105,16 @@ loadScript('https://static.opentok.com/v2/js/opentok.js').then(() => {
     const deviceSelector = DeviceSelector();
     document.body.appendChild(deviceSelector);
 
-    const audioContainers = [];
-    const videoContainers = [];
+    const videoGroup = DeviceSelectorGroup(
+      ot,
+      devices.filter(device => device.kind === 'videoInput'),
+      deviceSelector.querySelector('.video-options')
+    );
 
-    const publishers = devices.map((device) => {
-      const mediaTypeContainer = deviceSelector.querySelector(
-        device.kind === 'audioInput' ?
-        '.audio-options' :
-        '.video-options'
-      );
-
-      const deviceDisplay = DeviceDisplay();
-      mediaTypeContainer.appendChild(deviceDisplay);
-
-      const pubContainer = deviceDisplay.querySelector('.pub-container');
-
-      const containerGroup = (device.kind === 'audioInput' ?
-        audioContainers :
-        videoContainers
-      );
-
-      containerGroup.push(pubContainer);
-
-      pubContainer.addEventListener('click', () => {
-        containerGroup.forEach((sibling) => {
-          sibling.classList.remove('selected');
-        });
-
-        pubContainer.classList.add('selected');
-      });
-
-      const opt = (device.kind === 'audioInput' ?
-        { audioSource: device.deviceId, videoSource: null } :
-        { audioSource: null, videoSource: device.deviceId }
-      );
-
-      opt.insertMode = 'append';
-
-      deviceDisplay.querySelector('.pub-label').textContent = device.label;
-
-      return ot.initPublisher(pubContainer, opt);
-    });
-
-    [audioContainers, videoContainers].forEach((containerGroup) => {
-      if (containerGroup.length > 0) {
-        containerGroup[0].classList.add('selected');
-      }
-    });
+    const audioGroup = DeviceSelectorGroup(
+      ot,
+      devices.filter(device => device.kind === 'audioInput'),
+      deviceSelector.querySelector('.audio-options')
+    );
   });
 });
