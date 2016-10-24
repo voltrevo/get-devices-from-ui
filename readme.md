@@ -13,3 +13,5 @@ getDevicesFromUI().then(({audioSource, videoSource}) => {
   OT.initPublisher({audioSource, videoSource});
 });
 ```
+
+![Example Screenshot](screenshot.png)
