@@ -3,7 +3,7 @@
   padding: 20px;
 }
 
-.pub-container {
+.device-selector .pub-container {
   margin-bottom: 10px;
   opacity: 0.5;
   cursor: pointer;
@@ -27,6 +27,7 @@
   border-radius: 20px;
   max-height: 80vh;
   overflow-y: auto;
+  background-color: white;
 }
 
 .device-selector h1, .device-selector h2 {

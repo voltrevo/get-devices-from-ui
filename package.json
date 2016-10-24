@@ -1,13 +1,14 @@
 {
-  "name": "hackday-2016-10-24",
+  "name": "get-devices-from-ui",
   "version": "1.0.0",
-  "description": "",
+  "description": "A UI for choosing video and audio sources for opentok",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nakedjs demo/demo.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Andrew Morris",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "^3.8.1",
     "eslint-config-airbnb": "^12.0.0",
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "cssify": "^1.0.3",
-    "html2jsify": "0.0.2"
+    "html2jsify": "0.0.2",
+    "lodash": "^4.16.4"
   }
 }

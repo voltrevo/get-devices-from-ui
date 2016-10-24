@@ -6,39 +6,7 @@ const DeviceDisplay = require('./DeviceDisplay.html');
 const DeviceSelector = require('./DeviceSelector.html');
 require('./style.css');
 
-const documentReady = new Promise((resolve) => {
-  if (document.readyState === 'complete') {
-    resolve();
-  } else {
-    const onReady = () => {
-      resolve();
-      document.removeEventListener('DOMContentLoaded', onReady, true);
-      window.removeEventListener('load', onReady, true);
-    };
-    document.addEventListener('DOMContentLoaded', onReady, true);
-    window.addEventListener('load', onReady, true);
-  }
-});
-
-const loadScript = src => documentReady.then(() => {
-  const script = document.createElement('script');
-  script.src = src;
-  document.body.appendChild(script);
-
-  return new Promise(resolve =>
-    script.addEventListener('load', resolve)
-  );
-});
-
-const getOpentok = () => {
-  if (window.OT) {
-    return Promise.resolve(window.OT);
-  }
-
-  return loadScript('https://static.opentok.com/v2/js/opentok.js')
-    .then(() => window.OT)
-  ;
-};
+const getOpentok = require('./getOpentok.js');
 
 const DeviceItem = (ot, device) => {
   const deviceItem = {};
