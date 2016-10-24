@@ -1,7 +1,7 @@
 # get-devices-from-ui
 
 ```sh
-npm install --save asdfasdfasdfgit+ssh://git@github.com:voltrevo/get-devices-from-ui.git
+npm install --save git+ssh://git@github.com:voltrevo/get-devices-from-ui.git
 ```
 
 ```js
